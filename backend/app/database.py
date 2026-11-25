@@ -132,6 +132,19 @@ def inicializar_db():
             )
         """)
 
+        conexion.execute("""
+            CREATE TABLE IF NOT EXISTS oportunidades (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                nombre TEXT NOT NULL,
+                categoria TEXT NOT NULL,
+                pais_origen TEXT NOT NULL,
+                precio REAL NOT NULL CHECK(precio > 0),
+                moneda TEXT NOT NULL,
+                fuente TEXT NOT NULL,
+                fecha_consulta TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
         conexion.commit()
 
     finally:
