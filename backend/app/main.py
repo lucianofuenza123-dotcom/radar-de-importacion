@@ -7,7 +7,8 @@ from app.api import (
     cotizaciones,
     ordenes,
     envios,
-    reclamos
+    reclamos,
+    costos
 )
 
 from app.database import inicializar_db
@@ -31,6 +32,7 @@ app.include_router(cotizaciones.router)
 app.include_router(ordenes.router)
 app.include_router(envios.router)
 app.include_router(reclamos.router)
+app.include_router(costos.router)
 
 
 @app.get("/")

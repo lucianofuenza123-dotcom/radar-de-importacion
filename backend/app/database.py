@@ -114,6 +114,24 @@ def inicializar_db():
             )
         """)
 
+        conexion.execute("""
+            CREATE TABLE IF NOT EXISTS costos_importacion (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                orden_id INTEGER NOT NULL,
+                precio_compra REAL NOT NULL,
+                transporte REAL NOT NULL,
+                seguro REAL NOT NULL,
+                tributos REAL NOT NULL,
+                otros_gastos REAL NOT NULL,
+                cantidad INTEGER NOT NULL,
+                moneda TEXT NOT NULL,
+                costo_total REAL NOT NULL,
+                costo_unitario REAL NOT NULL,
+                fecha_calculo TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (orden_id) REFERENCES ordenes_importacion(id)
+            )
+        """)
+
         conexion.commit()
 
     finally:
