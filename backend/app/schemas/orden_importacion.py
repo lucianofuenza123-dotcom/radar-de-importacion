@@ -1,7 +1,19 @@
+
 from datetime import date
 from typing import Literal
 
 from pydantic import BaseModel, Field
+
+
+EstadosOrden = Literal[
+    "En evaluación",
+    "Cotizada",
+    "Aprobada",
+    "Despachada",
+    "En tránsito",
+    "Recibida",
+    "Cancelada"
+]
 
 
 class OrdenProductoCrear(BaseModel):
@@ -21,17 +33,13 @@ class OrdenProductoRespuesta(BaseModel):
 class OrdenImportacionCrear(BaseModel):
     proveedor_id: int = Field(gt=0)
     fecha: date
-    estado: Literal[
-        "En evaluación",
-        "Cotizada",
-        "Aprobada",
-        "Despachada",
-        "En tránsito",
-        "Recibida",
-        "Cancelada"
-    ] = "En evaluación"
+    estado: EstadosOrden = "En evaluación"
     observaciones: str | None = None
     productos: list[OrdenProductoCrear] = Field(min_length=1)
+
+
+class OrdenImportacionActualizarEstado(BaseModel):
+    estado: EstadosOrden
 
 
 class OrdenImportacionRespuesta(BaseModel):
