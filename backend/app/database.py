@@ -51,6 +51,7 @@ def inicializar_db():
                 FOREIGN KEY (proveedor_id) REFERENCES proveedores(id)
             )
         """)
+
         conexion.execute("""
             CREATE TABLE IF NOT EXISTS ordenes_importacion (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -72,6 +73,44 @@ def inicializar_db():
                 moneda TEXT NOT NULL,
                 FOREIGN KEY (orden_id) REFERENCES ordenes_importacion(id),
                 FOREIGN KEY (producto_id) REFERENCES productos(id)
+            )
+        """)
+
+        conexion.execute("""
+            CREATE TABLE IF NOT EXISTS envios (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                orden_id INTEGER NOT NULL UNIQUE,
+                transportista TEXT,
+                codigo_seguimiento TEXT,
+                fecha_estimada TEXT,
+                fecha_real TEXT,
+                estado TEXT NOT NULL DEFAULT 'Pendiente',
+                FOREIGN KEY (orden_id) REFERENCES ordenes_importacion(id)
+            )
+        """)
+
+        conexion.execute("""
+            CREATE TABLE IF NOT EXISTS historial_envios (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                envio_id INTEGER NOT NULL,
+                estado TEXT NOT NULL,
+                observacion TEXT,
+                fecha TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (envio_id) REFERENCES envios(id)
+            )
+        """)
+
+        conexion.execute("""
+            CREATE TABLE IF NOT EXISTS reclamos (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                proveedor_id INTEGER NOT NULL,
+                orden_id INTEGER,
+                descripcion TEXT NOT NULL,
+                fecha TEXT NOT NULL,
+                estado TEXT NOT NULL DEFAULT 'Abierto',
+                respuesta TEXT,
+                FOREIGN KEY (proveedor_id) REFERENCES proveedores(id),
+                FOREIGN KEY (orden_id) REFERENCES ordenes_importacion(id)
             )
         """)
 
