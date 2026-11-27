@@ -1,9 +1,24 @@
+
 import httpx
 
 
 URL_COMTRADE = (
     "https://comtradeapi.un.org/public/v1/preview/C/A/HS"
 )
+
+
+PAISES = {
+    32: "Argentina",
+    156: "China",
+    76: "Brasil",
+    842: "Estados Unidos",
+    276: "Alemania",
+    392: "Japón",
+    410: "Corea del Sur",
+    484: "México",
+    380: "Italia",
+    724: "España"
+}
 
 
 def consultar_importaciones(
@@ -49,9 +64,15 @@ def consultar_importaciones(
         resultados.append({
             "producto": nombre_producto,
             "codigo_producto": registro["cmdCode"],
-            "pais_importador": "Argentina",
-            "pais_origen": "China",
-            "periodo": registro["period"],
+            "pais_importador": PAISES.get(
+                pais_importador,
+                str(pais_importador)
+            ),
+            "pais_origen": PAISES.get(
+                pais_origen,
+                str(pais_origen)
+            ),
+            "periodo": str(registro["period"]),
             "cantidad_declarada": registro.get("qty"),
             "unidad_cantidad_codigo": registro.get("qtyUnitCode"),
             "peso_neto_kg": registro.get("netWgt"),

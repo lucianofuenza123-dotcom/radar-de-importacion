@@ -1,3 +1,4 @@
+
 from pydantic import BaseModel
 
 
@@ -11,3 +12,12 @@ class AnalisisProductoRespuesta(BaseModel):
     valor_cif_usd: float | None = None
     peso_neto_kg: float | None = None
     fuente: str
+
+
+class ComparacionPaisRespuesta(BaseModel):
+    producto: str
+    codigo_producto: str
+    periodo: str
+    pais_mayor_importacion: str
+    valor_cif_usd: float
+    paises_comparados: int

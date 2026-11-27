@@ -2,13 +2,15 @@
 from fastapi import APIRouter, HTTPException
 
 from app.schemas.analisis_oportunidades import (
-    AnalisisProductoRespuesta
+    AnalisisProductoRespuesta,
+    ComparacionPaisRespuesta
 )
 
 from app.services.analisis_oportunidades import (
     analizar_importaciones_argentina,
     obtener_ranking_importaciones_argentina,
-    actualizar_importaciones_argentina
+    actualizar_importaciones_argentina,
+    comparar_paises_por_producto
 )
 
 
@@ -43,3 +45,11 @@ def actualizar_analisis_importaciones():
         return actualizar_importaciones_argentina()
     except ValueError as error:
         raise HTTPException(status_code=502, detail=str(error))
+
+
+@router.get(
+    "/comparacion-paises",
+    response_model=list[ComparacionPaisRespuesta]
+)
+def consultar_comparacion_paises():
+    return comparar_paises_por_producto()
