@@ -145,6 +145,29 @@ def inicializar_db():
             )
         """)
 
+        # Estadísticas comerciales obtenidas de UN Comtrade
+        conexion.execute("""
+            CREATE TABLE IF NOT EXISTS estadisticas_comtrade (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                producto TEXT NOT NULL,
+                codigo_producto TEXT NOT NULL,
+                pais_importador TEXT NOT NULL,
+                pais_origen TEXT NOT NULL,
+                periodo TEXT NOT NULL,
+                valor_fob_usd REAL,
+                valor_cif_usd REAL,
+                peso_neto_kg REAL,
+                fuente TEXT NOT NULL,
+                fecha_actualizacion TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE (
+                    codigo_producto,
+                    pais_importador,
+                    pais_origen,
+                    periodo
+                )
+            )
+        """)
+
         conexion.commit()
 
     finally:

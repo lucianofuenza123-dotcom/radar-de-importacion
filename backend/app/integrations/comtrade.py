@@ -10,7 +10,8 @@ def consultar_importaciones(
     pais_importador=32,
     pais_origen=156,
     codigo_producto="851830",
-    periodo=2024
+    periodo=2024,
+    nombre_producto="Auriculares y audífonos"
 ):
     parametros = {
         "reporterCode": pais_importador,
@@ -28,7 +29,6 @@ def consultar_importaciones(
         )
 
         respuesta.raise_for_status()
-
         datos = respuesta.json()
 
     except httpx.HTTPError as error:
@@ -47,7 +47,7 @@ def consultar_importaciones(
 
     for registro in registros:
         resultados.append({
-            "producto": "Auriculares y audífonos",
+            "producto": nombre_producto,
             "codigo_producto": registro["cmdCode"],
             "pais_importador": "Argentina",
             "pais_origen": "China",
