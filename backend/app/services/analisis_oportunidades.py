@@ -24,24 +24,28 @@ PAISES_ORIGEN = [
 ]
 
 
+ANIOS_ANALIZAR = [2023, 2024]
+
+
 def actualizar_importaciones_argentina():
     resultados = []
 
-    for pais in PAISES_ORIGEN:
-        for producto in PRODUCTOS_ANALIZAR:
-            try:
-                registros = consultar_importaciones(
-                    pais_importador=32,
-                    pais_origen=pais["codigo"],
-                    codigo_producto=producto["codigo"],
-                    periodo=2024,
-                    nombre_producto=producto["nombre"]
-                )
+    for anio in ANIOS_ANALIZAR:
+        for pais in PAISES_ORIGEN:
+            for producto in PRODUCTOS_ANALIZAR:
+                try:
+                    registros = consultar_importaciones(
+                        pais_importador=32,
+                        pais_origen=pais["codigo"],
+                        codigo_producto=producto["codigo"],
+                        periodo=anio,
+                        nombre_producto=producto["nombre"]
+                    )
 
-                resultados.extend(registros)
+                    resultados.extend(registros)
 
-            except ValueError:
-                continue
+                except ValueError:
+                    continue
 
     if resultados:
         guardar_estadisticas_comtrade(resultados)
@@ -111,6 +115,75 @@ def comparar_paises_por_producto():
             "pais_mayor_importacion": mayor["pais_origen"],
             "valor_cif_usd": mayor["valor_cif_usd"],
             "paises_comparados": len(registros_validos)
+        })
+
+    return resultados
+
+
+def analizar_evolucion_importaciones():
+    registros = listar_estadisticas_comtrade()
+
+    comparaciones = {}
+
+    for registro in registros:
+        valor_cif = registro["valor_cif_usd"]
+
+        if valor_cif is None:
+            continue
+
+        clave = (
+            registro["codigo_producto"],
+            registro["pais_origen"]
+        )
+
+        if clave not in comparaciones:
+            comparaciones[clave] = {
+                "producto": registro["producto"],
+                "codigo_producto": registro["codigo_producto"],
+                "pais_origen": registro["pais_origen"],
+                "periodos": {}
+            }
+
+        comparaciones[clave]["periodos"][
+            registro["periodo"]
+        ] = valor_cif
+
+    resultados = []
+
+    for grupo in comparaciones.values():
+        periodos = grupo["periodos"]
+
+        if "2023" not in periodos or "2024" not in periodos:
+            continue
+
+        valor_anterior = periodos["2023"]
+        valor_actual = periodos["2024"]
+
+        if valor_anterior == 0:
+            continue
+
+        variacion = (
+            (valor_actual - valor_anterior)
+            / valor_anterior
+        ) * 100
+
+        if variacion > 0:
+            tendencia = "Crecimiento"
+        elif variacion < 0:
+            tendencia = "Disminución"
+        else:
+            tendencia = "Estable"
+
+        resultados.append({
+            "producto": grupo["producto"],
+            "codigo_producto": grupo["codigo_producto"],
+            "pais_origen": grupo["pais_origen"],
+            "periodo_anterior": "2023",
+            "periodo_actual": "2024",
+            "valor_cif_anterior": valor_anterior,
+            "valor_cif_actual": valor_actual,
+            "variacion_porcentual": round(variacion, 2),
+            "tendencia": tendencia
         })
 
     return resultados

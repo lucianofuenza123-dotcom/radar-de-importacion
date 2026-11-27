@@ -21,3 +21,15 @@ class ComparacionPaisRespuesta(BaseModel):
     pais_mayor_importacion: str
     valor_cif_usd: float
     paises_comparados: int
+
+
+class EvolucionImportacionesRespuesta(BaseModel):
+    producto: str
+    codigo_producto: str
+    pais_origen: str
+    periodo_anterior: str
+    periodo_actual: str
+    valor_cif_anterior: float
+    valor_cif_actual: float
+    variacion_porcentual: float
+    tendencia: str

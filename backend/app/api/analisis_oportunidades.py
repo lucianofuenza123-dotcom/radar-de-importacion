@@ -3,14 +3,16 @@ from fastapi import APIRouter, HTTPException
 
 from app.schemas.analisis_oportunidades import (
     AnalisisProductoRespuesta,
-    ComparacionPaisRespuesta
+    ComparacionPaisRespuesta,
+    EvolucionImportacionesRespuesta
 )
 
 from app.services.analisis_oportunidades import (
     analizar_importaciones_argentina,
     obtener_ranking_importaciones_argentina,
     actualizar_importaciones_argentina,
-    comparar_paises_por_producto
+    comparar_paises_por_producto,
+    analizar_evolucion_importaciones
 )
 
 
@@ -53,3 +55,11 @@ def actualizar_analisis_importaciones():
 )
 def consultar_comparacion_paises():
     return comparar_paises_por_producto()
+
+
+@router.get(
+    "/evolucion",
+    response_model=list[EvolucionImportacionesRespuesta]
+)
+def consultar_evolucion_importaciones():
+    return analizar_evolucion_importaciones()
